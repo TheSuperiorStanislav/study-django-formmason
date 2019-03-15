@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Create/Edit Form</h1>
+{% if form_pk %}
+    <form action="{% url 'edit-form' form_pk %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save">
+    </form>
+{% else %}
+<form action="{% url 'create-form' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Create">
+    </form>
+{% endif %}
+{% endblock content %}

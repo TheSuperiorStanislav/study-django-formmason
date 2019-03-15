@@ -7,7 +7,8 @@
         {% for form in object_list %}
             <li>
                 <a href="{% url 'custom-form' form.pk %}">{{ form }}</a> | 
-                <a href="{% url 'form-responses' form.pk %}">See Responses</a>
+                <a href="{% url 'form-responses' form.pk %}">See Responses</a> |  
+                <a href="{% url 'edit-form' form.pk %}">Edit</a>
             </li>
         {% endfor %}
     </ul>
