@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Avaliable Forms</h1>
+    {% if object_list %}
+    <ul>
+        {% for form in object_list %}
+            <li>
+                <a href="{% url 'custom-form' form.pk %}">{{ form }}</a> | 
+                <a href="{% url 'form-responses' form.pk %}">See Responses</a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock content %}
