@@ -50,6 +50,12 @@ class CustomFormView(FormView):
             return forms.CharField
         elif value_type == 'number':
             return forms.IntegerField
+        
+    def get_context_data(self, **kwargs):
+        ctx = super(CustomFormView, self).get_context_data(**kwargs)
+        ctx['form_schema'] = FormSchema.objects.get(pk = self.kwargs['form_pk'])
+
+        return ctx 
 
 class FormResponseListView(TemplateView):
     template_name = 'form_responses.html'
@@ -73,7 +79,8 @@ class FormResponseListView(TemplateView):
                     response_values.append(response_data[field_name])
                 else:
                     response_values.append('')
-            responses_list.append(response_values)
+            if any(response_values):
+                responses_list.append(response_values)
         
         ctx['responses_list'] = responses_list
 
