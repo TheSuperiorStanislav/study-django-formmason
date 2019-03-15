@@ -3,7 +3,7 @@ import json
 from django.shortcuts import render
 from django import forms
 from django.http.response import HttpResponseRedirect
-from django.views.generic import FormView, ListView
+from django.views.generic import FormView, ListView, TemplateView
 from django.urls import reverse
 from main.models import FormSchema, FormResponse
 
@@ -50,15 +50,34 @@ class CustomFormView(FormView):
         elif value_type == 'number':
             return forms.IntegerField
 
-class FormResponseListView(ListView):
+class FormResponseListView(TemplateView):
     template_name = 'form_responses.html'
 
     def get_context_data(self, **kwargs):
         ctx = super(FormResponseListView, self).get_context_data(**kwargs)
 
-        ctx['form'] = self.get_form()
+        form = self.get_form()
+        schema = form.schema
+        form_fields = schema.keys()
+        ctx['headers'] = form_fields
+        ctx['form'] = form
+
+        responses = self.get_queryset()
+        responses_list = []
+        for response in responses:
+            response_values = []
+            response_data = response.response
+            for field_name in form_fields:
+                if field_name in response_data:
+                    response_values.append(response_data[field_name])
+                else:
+                    response_values.append('')
+            responses_list.append(response_values)
+        
+        ctx['responses_list'] = responses_list
 
         return ctx
+
     def get_queryset(self):
         form = self.get_form()
         return FormResponse.objects.filter(form = form)
